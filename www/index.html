@@ -174,9 +174,9 @@ function vHist(){var R=regs();
   var h='<div class="card"><div class="bar"><button class="btn" onclick="selExp()">Exportar imagem</button><button class="btn s" onclick="window.print()">Imprimir</button></div></div>';
   if(!R.length)return h+'<div class="card mu" style="text-align:center;padding:36px 16px;font-size:15px"><div style="font-size:34px">📭</div>Nenhum envio nesta loja ainda.</div>';
   for(var k=R.length-1;k>=0;k--){var r=R[k],a=k>0?R[k-1]:null;
-    h+='<div class="card"><div class="top"><span>📅 '+br(r.data)+'<span class="tag">Loja '+(r.loja||"")+'</span></span><span class="bar" style="flex-wrap:nowrap"><button class="btn s" onclick="exportar(['+r.id+'])">Imagem</button><button class="btn s" onclick="del('+r.id+')">Excluir</button></span></div><div class="sc"><table><tr><th>INCENTIVO</th><th>VALOR</th><th>META</th><th>SALDO</th><th>VAR.</th></tr>';
+    h+='<div class="card"><div class="top"><span>📅 '+br(r.data)+'<span class="tag">Loja '+(r.loja||"")+'</span></span><span class="bar" style="flex-wrap:nowrap"><button class="btn s" onclick="exportar(['+r.id+'])">Imagem</button><button class="btn s" onclick="del('+r.id+')">Excluir</button></span></div><div class="sc"><table><tr><th>INCENTIVO</th><th>REALIZADO</th><th>META</th><th>SALDO</th><th>VAR.</th></tr>';
     r.nomes.forEach(function(n,i){var u=r.unid?r.unid[i]:"",m=r.metas?r.metas[i]:null,s=sd(r.valores[i],m,u),p=varp(r.valores[i],ant(a,n));
-      h+='<tr><td>'+esc(n)+'</td><td data-l="Valor">'+fu(r.valores[i],u)+'</td><td data-l="Meta">'+fu(m,u)+'</td><td data-l="Saldo" class="'+s.c+'">'+s.t+'</td><td data-l="Variação" class="'+p.c+'">'+p.t+'</td></tr>'});
+      h+='<tr><td>'+esc(n)+'</td><td data-l="Realizado">'+fu(r.valores[i],u)+'</td><td data-l="Meta">'+fu(m,u)+'</td><td data-l="Saldo" class="'+s.c+'">'+s.t+'</td><td data-l="Variação" class="'+p.c+'">'+p.t+'</td></tr>'});
     h+='</table></div></div>'}
   return h}
 function del(id){conf("Excluir este envio?",function(){S.registros=S.registros.filter(function(r){return r.id!==id});save();render()})}
@@ -197,7 +197,7 @@ function imgRel(r,a){
   c.globalAlpha=.9;c.font="36px "+F;c.fillText("Loja "+(r.loja||"")+" · Envio de "+br(r.data),P+16,156);c.globalAlpha=1;
   c.fillStyle="#fff";rr(c,P,y0,W-2*P,cH,28);c.fill();
   c.fillStyle="#6b7a73";c.font="bold 24px "+F;c.fillText("INCENTIVO",P+32,y0+46);
-  c.textAlign="right";c.fillText("VALOR",650,y0+46);c.fillText("VS META",W-P-32,y0+46);
+  c.textAlign="right";c.fillText("REALIZADO",650,y0+46);c.fillText("VS META",W-P-32,y0+46);
   var X=W-P-32,UP=["#dcfce7","#15803d"],DN=["#fee2e2","#dc2626"];
   function pl(t,col,cy){c.font="bold 24px "+F;var w=c.measureText(t).width+32,x=X-w;c.fillStyle=col[0];rr(c,x,cy-22,w,44,22);c.fill();c.fillStyle=col[1];c.textAlign="center";c.fillText(t,x+w/2,cy+8)}
   r.nomes.forEach(function(nm,i){
@@ -246,26 +246,33 @@ function vCfg(){var nm=["dom","seg","ter","qua","qui","sex","sáb"],z=function(n
 var METAS_URL="https://raw.githubusercontent.com/aryeldeoliveirazn1/Incentivo-Consultoras/main/metas.json";
 var BASE=JSON.parse(JSON.stringify(LOJAS)),MK="incentivos_metas_v1",METAS=null,lastF=0;
 function sig(){return JSON.stringify(LOJAS)+(METAS&&METAS.mes)}
-function aplicarMetas(m){
+function aplicarMetas(m){var n=0;
   Object.keys(BASE).forEach(function(l){LOJAS[l]=BASE[l].map(function(x){return[x[0],x[1],x[2]]});
     var o=m&&m.lojas&&m.lojas[l];
-    if(o)LOJAS[l].forEach(function(x){var v=o[x[0]];if(typeof v==="number"&&isFinite(v))x[1]=v})});
-  METAS=m||null}
+    if(o)LOJAS[l].forEach(function(x){var v=o[x[0]];if(typeof v==="number"&&isFinite(v)){x[1]=v;n++}})});
+  METAS=m||null;return n}
 function cacheMetas(){try{var r=localStorage.getItem(MK);if(r)aplicarMetas(JSON.parse(r))}catch(e){}}
+var METAS_ERR="";
 function buscarMetas(manual){
   if(typeof fetch!=="function")return;
   if(!manual&&Date.now()-lastF<600000)return;lastF=Date.now();
-  fetch(METAS_URL+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(m){
-    if(!m||typeof m.lojas!=="object")throw 0;
-    var antes=sig();m.quando=Date.now();
+  fetch(METAS_URL+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw{st:r.status};return r.text()}).then(function(t){
+    var m;try{m=JSON.parse(t)}catch(x){throw{k:"json"}}
+    if(!m||typeof m.lojas!=="object")throw{k:"fmt"};
+    var antes=sig(),ant=METAS;m.quando=Date.now();
+    if(!aplicarMetas(m)){aplicarMetas(ant);throw{k:"nomes"}}
     try{localStorage.setItem(MK,JSON.stringify(m))}catch(e){}
-    aplicarMetas(m);
+    METAS_ERR="";
     if(manual)toast("Metas atualizadas"+(m.mes?": "+m.mes:""),true);
-    if((manual||sig()!==antes)&&tab!=="hist")render()}).catch(function(){if(manual)toast("Não consegui atualizar. Verifique a internet.")})}
+    if((manual||sig()!==antes)&&tab!=="hist")render()
+  }).catch(function(e){e=e||{};
+    METAS_ERR=e.st===404?"Arquivo não encontrado no GitHub (erro 404). Confira o nome do repositório, o branch (main) e se o repositório é público.":e.st?"O GitHub respondeu com erro "+e.st+".":e.k==="json"?"O metas.json tem erro de formatação (vírgula sobrando ou faltando, aspas ou número escrito com vírgula).":e.k==="fmt"?"O metas.json precisa ter o campo \"lojas\".":e.k==="nomes"?"Nenhuma meta foi reconhecida. Confira se os números das lojas e os nomes dos incentivos estão idênticos aos do app.":"Sem conexão com a internet.";
+    if(manual){toast(METAS_ERR,false,6000);if(tab==="cfg")render()}})}
 function metasCard(){var t;
   if(METAS){var d=new Date(METAS.quando);t="<b>"+esc(METAS.mes||"Metas atualizadas")+"</b> · atualizadas em "+br(iso(d))+" às "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
   else t="Usando as metas que vieram junto com o app. Com internet, toque em atualizar para buscar as metas do mês.";
-  return '<div class="card"><div class="top">📅 Metas do mês</div><div class="mu" style="margin-bottom:12px">'+t+'</div><button class="btn s" onclick="buscarMetas(true)">Atualizar metas agora</button></div>'}
+  var e=METAS_ERR?'<div style="margin-top:10px;color:var(--dn);font-size:13px">⚠️ '+esc(METAS_ERR)+'</div>':'';
+  return '<div class="card"><div class="top">📅 Metas do mês</div><div class="mu" style="margin-bottom:12px">'+t+'</div><button class="btn s" onclick="buscarMetas(true)">Atualizar metas agora</button>'+e+'<div class="mu" style="margin-top:10px;font-size:11px;word-break:break-all">Lendo de: '+esc(METAS_URL.replace("https://raw.githubusercontent.com/",""))+'</div></div>'}
 function mostrarImgs(fs){var o=document.createElement("div");o.className="ov";
   o.innerHTML='<div class="card" style="max-height:90vh;overflow:auto"><div class="top">Salve ou compartilhe a imagem</div><div class="mu" style="margin-bottom:10px">Toque e segure na imagem e escolha <b>Compartilhar</b> ou <b>Salvar em Fotos</b>.</div>'+fs.map(function(f){return '<img src="'+f.url+'" style="width:100%;border-radius:12px;margin-bottom:10px">'}).join("")+'<button class="btn w" onclick="this.closest(\'.ov\').remove()">Fechar</button></div>';
   document.body.appendChild(o)}
@@ -276,8 +283,8 @@ function partilhar(fs,titulo,fb){if(!mobil()||!navigator.share||!navigator.canSh
   for(var k=0;k<tipos.length;k++){var fl=fs.map(function(f){return new File([f.blob],f.name,{type:tipos[k]||f.blob.type})});
     if(navigator.canShare({files:fl})){navigator.share({files:fl,title:titulo}).catch(function(e){if(fb&&(!e||e.name!=="AbortError"))fb()});return true}}
   return false}
-var tt;function toast(m,ok){var e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";document.body.appendChild(e)}
-  e.className="toast"+(ok?" ok":"");e.textContent=(ok?"✅ ":"")+m;void e.offsetWidth;e.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){e.classList.remove("on")},2400)}
+var tt;function toast(m,ok,ms){var e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";document.body.appendChild(e)}
+  e.className="toast"+(ok?" ok":"");e.textContent=(ok?"✅ ":"")+m;void e.offsetWidth;e.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){e.classList.remove("on")},ms||2400)}
 function conf(m,cb){var o=document.createElement("div");o.className="ov";o.innerHTML='<div class="card"><div class="top">'+m+'</div><div class="bar" style="margin-top:12px"><button class="btn r" id="ok">Confirmar</button><button class="btn s" id="no">Cancelar</button></div></div>';
   document.body.appendChild(o);o.querySelector("#no").onclick=function(){o.remove()};o.querySelector("#ok").onclick=function(){o.remove();cb()}}
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
