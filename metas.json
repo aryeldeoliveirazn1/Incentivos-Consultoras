@@ -1,0 +1,51 @@
+{
+  "mes": "Outubro/2026",
+  "lojas": {
+    "20129": {
+      "META FINANCEIRA (Individual)": 49623.66,
+      "META FINANCEIRA (Loja)": 95,
+      "NPS (Loja)": 92,
+      "BOLETO MEDIO (Individual)": 165,
+      "RESGATE FIDELIDADE (Individual)": 49,
+      "ITENS POR BOLETO (Individual)": 2.3,
+      "BOLETO PROMOCIONAL (Individual)": 33,
+      "GESTÃO DE CATEGORIAS-SKIN (Individual)": 2.7,
+      "ID CLIENTE (Individual)": 110
+    },
+    "20407": {
+      "META FINANCEIRA (Individual)": 45000,
+      "META FINANCEIRA (Loja)": 95,
+      "NPS (Loja)": 92,
+      "BOLETO MEDIO (Individual)": 165,
+      "RESGATE FIDELIDADE (Individual)": 49,
+      "ITENS POR BOLETO (Individual)": 2.5,
+      "BOLETO PROMOCIONAL (Individual)": 33,
+      "GESTÃO DE CATEGORIAS-SKIN (Individual)": 2.7,
+      "ID CLIENTE (Individual)": 110,
+      "BOLETO TURBINADO (Individual - Habilitador)": 31
+    },
+    "20408": {
+      "META FINANCEIRA (Individual)": 44421,
+      "META FINANCEIRA (Loja)": 95,
+      "NPS (Loja)": 92,
+      "BOLETO MEDIO (Individual)": 169,
+      "RESGATE FIDELIDADE (Individual)": 49,
+      "ITENS POR BOLETO (Individual)": 2.8,
+      "BOLETO PROMOCIONAL (Individual)": 33,
+      "GESTÃO DE CATEGORIAS-SKIN (Individual)": 2.7,
+      "ID CLIENTE (Individual)": 110
+    },
+    "24824": {
+      "META FINANCEIRA (Individual)": 24500,
+      "META FINANCEIRA (Loja)": 95,
+      "NPS (Loja)": 92,
+      "BOLETO MEDIO (Individual)": 170,
+      "RESGATE FIDELIDADE (Individual)": 49,
+      "ITENS POR BOLETO (Individual)": 2.6,
+      "BOLETO PROMOCIONAL (Individual)": 33,
+      "GESTÃO DE CATEGORIAS-SKIN (Individual)": 2.7,
+      "ID CLIENTE (Individual)": 110,
+      "BOLETO TURBINADO (Individual - Habilitador)": 31
+    }
+  }
+}

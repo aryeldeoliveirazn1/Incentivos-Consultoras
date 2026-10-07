@@ -1,0 +1,62 @@
+name: Gerar APK e EXE
+on:
+  push:
+    branches: [main, master]
+    paths-ignore: ["metas.json", "LEIA-ME.md"]
+  workflow_dispatch:
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: npm install
+      - run: npx cap add android
+      - run: npx capacitor-assets generate --android
+      - name: Permissões e ícone de notificação
+        run: |
+          mkdir -p android/app/src/main/res/drawable
+          cp assets/ic_stat_icon.png android/app/src/main/res/drawable/ic_stat_icon.png
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>\n</manifest>#' android/app/src/main/AndroidManifest.xml
+      - run: npx cap sync android
+      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Incentivos-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Incentivos-Windows-EXE
+          path: dist/*.exe
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npx cap add ios
+      - run: npx capacitor-assets generate --ios
+      - run: npx cap sync ios
+      - name: Compilar sem assinatura
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -qr ../../Incentivos-iOS.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Incentivos-iOS-IPA
+          path: Incentivos-iOS.ipa

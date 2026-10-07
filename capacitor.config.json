@@ -1,0 +1,8 @@
+{
+  "appId": "com.loja.incentivos",
+  "appName": "Incentivos da Loja",
+  "webDir": "www",
+  "plugins": {
+    "LocalNotifications": { "smallIcon": "ic_stat_icon", "iconColor": "#00694b" }
+  }
+}
