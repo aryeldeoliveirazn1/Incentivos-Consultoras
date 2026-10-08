@@ -243,7 +243,7 @@ function vCfg(){var nm=["dom","seg","ter","qua","qui","sex","sáb"],z=function(n
   txt=LEMB.dias.map(function(d){return nm[d]}).join(", ")+" às "+LEMB.avisos.map(function(h){return z(h[0])+":"+z(h[1])}).join(" e ")+". Se você já preencheu no dia, os avisos são cancelados.";
   return '<div class="card"><div class="top">🔔 Notificações</div><div class="item" style="padding-bottom:0"><div class="n">Lembretes de preenchimento<small>'+txt+'</small></div><label class="sw"><input type="checkbox"'+(notifOn()?' checked':'')+' onchange="setNotif(this.checked)"><i></i></label></div><div class="bar" style="margin-top:14px"><button class="btn s" onclick="testarAviso()">Testar aviso</button></div></div>'+
   metasCard()+'<div class="card"><div class="top">💾 Dados</div><div class="mu" style="margin-bottom:12px">Use o backup para levar os dados para outro aparelho.</div><div class="bar"><button class="btn s" onclick="expJSON()">Backup</button><button class="btn s" onclick="document.getElementById(\'f\').click()">Restaurar</button><button class="btn r" onclick="zerar()">Apagar dados</button><input type="file" id="f" accept=".json" style="display:none" onchange="imp(this)"></div></div>'}
-var METAS_URL="https://raw.githubusercontent.com/aryeldeoliveirazn1/Incentivo-Consultoras/main/metas.json";
+var METAS_URL="https://raw.githubusercontent.com/aryeldeoliveirazn1/Incentivos-Consultoras/main/metas.json";
 var BASE=JSON.parse(JSON.stringify(LOJAS)),MK="incentivos_metas_v1",METAS=null,lastF=0;
 function sig(){return JSON.stringify(LOJAS)+(METAS&&METAS.mes)}
 function aplicarMetas(m){var n=0;
