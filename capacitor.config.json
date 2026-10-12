@@ -1,6 +1,6 @@
 {
   "appId": "com.loja.incentivos",
-  "appName": "Incentivos da Loja",
+  "appName": "Foco na Conquista",
   "webDir": "www",
   "plugins": {
     "LocalNotifications": { "smallIcon": "ic_stat_icon", "iconColor": "#00694b" }

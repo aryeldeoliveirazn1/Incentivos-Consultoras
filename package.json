@@ -22,7 +22,7 @@
   },
   "build": {
     "appId": "com.loja.incentivos",
-    "productName": "Incentivos da Loja",
+    "productName": "Foco na Conquista",
     "directories": { "output": "dist" },
     "files": ["electron/**", "www/**"],
     "win": { "target": ["nsis", "portable"] },
