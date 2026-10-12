@@ -111,11 +111,11 @@ header p#sub{margin-top:4px}
 <script>
 // ====== CONFIGURAÇÃO: edite a lista abaixo com os nomes dos incentivos ======
 // Cada incentivo: [nome, meta, unidade]  (unidade: "R$", "%" ou "")
-function mk(fin,fl,bm,ib,turb){var a=[["META FINANCEIRA (Individual)",fin,"R$"],["META FINANCEIRA (Loja)",fl,"R$"],["NPS (Loja)",92,""],["BOLETO MEDIO (Individual)",bm,"R$"],["RESGATE FIDELIDADE (Individual)",49,"%"],["ITENS POR BOLETO (Individual)",ib,""],["BOLETO PROMOCIONAL (Individual)",33,"%"],["GESTÃO DE CATEGORIAS-SKIN (Individual)",2.7,"%"],["ID CLIENTE (Individual)",110,"%"]];
+function mk(fin,fl,bm,ib,turb){var a=[["META FINANCEIRA (Individual)",fin,"R$"],["META FINANCEIRA (Loja)",fl,"R$"],["BOLETO MEDIO (Individual)",bm,"R$"],["RESGATE FIDELIDADE (Individual)",49,"%"],["ITENS POR BOLETO (Individual)",ib,""],["BOLETO PROMOCIONAL (Individual)",33,"%"],["GESTÃO DE CATEGORIAS-SKIN (Individual)",2.7,"%"],["ID CLIENTE (Individual)",110,"%"]];
   if(turb)a.push(["BOLETO TURBINADO (Individual - Habilitador)",31,"%"]);return a}
 // mk(meta fin. individual, meta fin. da LOJA em R$ (0 = a definir), boleto médio, itens por boleto, tem boleto turbinado?)
 var LOJAS={"20129":mk(49623.66,0,165,2.3,0),"20407":mk(45000,0,165,2.5,1),"20408":mk(44421,0,169,2.8,0),"24824":mk(24500,0,170,2.6,1)};
-var LEMB={dias:[1,3,5],janela:28,avisos:[[9,30,"Bom dia! ☀️","Hoje é dia de preencher os incentivos da loja."],[15,30,"Ainda não preencheu 📋","Já são 15:30 e os incentivos de hoje ainda não foram preenchidos."]]};
+var LEMB={dias:[1,3,5],janela:28,avisos:[[8,0,"Bom dia! ☀️","Hoje é dia de preencher os incentivos da loja."],[15,30,"Ainda não preencheu 📋","Já são 15:30 e os incentivos de hoje ainda não foram preenchidos."]]};
 // dias: 0=domingo, 1=segunda ... 6=sábado | avisos: [hora, minuto, título, texto]
 // ===========================================================================
 var KEY="incentivos_loja_v1", mem=null;
